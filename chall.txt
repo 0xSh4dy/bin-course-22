@@ -1,0 +1,97 @@
+int __cdecl __noreturn main(int argc, const char **argv, const char **envp)
+{
+  unsigned __int64 num; // rax
+  unsigned int index; // [rsp+1Ch] [rbp-A4h]
+  char *m; // [rsp+20h] [rbp-A0h]
+  unsigned __int64 n; // [rsp+28h] [rbp-98h]
+  unsigned __int64 na; // [rsp+28h] [rbp-98h]
+  chunk m_array[8]; // [rsp+30h] [rbp-90h] BYREF
+  unsigned __int64 v9; // [rsp+B8h] [rbp-8h]
+
+  v9 = __readfsqword(0x28u);
+  setvbuf(stdout, 0LL, 2, 0LL);
+  puts("\n===============");
+  puts("|   HeapLAB   |  House of Spirit");
+  puts("===============\n");
+  printf("puts() @ %p\n", &puts);
+  m = (char *)malloc(0x88uLL);
+  printf("heap @ %p\n", m - 16);
+  free(m);
+  memset(m_array, 0, sizeof(m_array));
+  index = 0;
+  printf("\nEnter your age: ");
+  user_0.age = read_num();
+  printf("Enter your username: ");
+  read(0, user_0.username, 0x40uLL);
+  while ( 1 )
+  {
+    while ( 1 )
+    {
+      printf("\n1) malloc %u/%u\n", index, 8LL);
+      puts("2) free");
+      puts("3) target");
+      puts("4) quit");
+      printf("> ");
+      num = read_num();
+      if ( num != 2 )
+        break;
+      printf("index: ");
+      na = read_num();
+      if ( na >= index )
+      {
+        puts("invalid index");
+      }
+      else if ( m_array[na].ptr )
+      {
+        free(m_array[na].ptr);
+        m_array[na].ptr = 0LL;
+      }
+      else
+      {
+        puts("this chunk was already freed");
+      }
+    }
+    if ( num > 2 )
+    {
+      if ( num == 3 )
+      {
+        printf("\ntarget: %s\n", user_0.target);
+      }
+      else if ( num == 4 )
+      {
+        exit(0);
+      }
+    }
+    else if ( num == 1 )
+    {
+      if ( index > 7 )
+      {
+        puts("maximum requests reached");
+      }
+      else
+      {
+        printf("size: ");
+        n = read_num();
+        if ( n > 0x3E8 )
+        {
+          puts("small chunks only (1000 bytes maximum)");
+        }
+        else
+        {
+          m_array[index].ptr = (char *)malloc(n);
+          if ( m_array[index].ptr )
+          {
+            printf("data: ");
+            read(0, m_array[index].ptr, n);
+            printf("chunk name: ");
+            read(0, &m_array[index++], 0x10uLL);
+          }
+          else
+          {
+            puts("request failed");
+          }
+        }
+      }
+    }
+  }
+}
